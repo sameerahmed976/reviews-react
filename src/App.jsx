@@ -8,22 +8,38 @@ function App() {
   const [data, setData] = useState(people);
   const [index, setIndex] = useState(0);
 
+  useEffect(() => {
+    let slider = setInterval(() => {
+      setIndex((previousIndex) => {
+        let newIndex = previousIndex + 1;
+        if (newIndex > data.length - 1) {
+          newIndex = 0;
+        }
+        return newIndex;
+      });
+    }, 3000);
+
+    return () => {
+      clearInterval(slider);
+    };
+  }, [index]);
+
   const prevButton = () => {
     setIndex((previousIndex) => {
-      let newIndex = previousIndex + 1;
+      let newIndex = previousIndex - 1;
 
       if (newIndex < 0) {
-        index = data.length - 1;
+        newIndex = data.length - 1;
       }
       return newIndex;
     });
   };
   const nextButton = () => {
     setIndex((previousIndex) => {
-      let newIndex = previousIndex - 1;
+      let newIndex = previousIndex + 1;
 
       if (newIndex > data.length - 1) {
-        index = 0;
+        newIndex = 0;
       }
       return newIndex;
     });
@@ -36,9 +52,9 @@ function App() {
         <section className="review__card--container">
           {data.map((ele, personIndex) => {
             const { id, image, name, title, quote } = ele;
-            let position = "active";
+            let position = "next";
             if (personIndex === index) {
-              position = "next";
+              position = "active";
             }
 
             if (
@@ -58,23 +74,16 @@ function App() {
                 <h2 className="review__name">{name}</h2>
                 <h3 className="review__title">{title}</h3>
                 <p className="review__quote">{quote}</p>
-                <article className="review__btn--group">
-                  <button
-                    className="btn btn__left"
-                    onClick={() => prevButton()}
-                  >
-                    <FaAngleDoubleLeft />
-                  </button>
-                  <button
-                    className="btn btn__right"
-                    onClick={() => nextButton()}
-                  >
-                    <FaAngleDoubleRight />
-                  </button>
-                </article>
               </article>
             );
           })}
+
+          <button className="btn btn__left" onClick={() => prevButton()}>
+            <FaAngleDoubleLeft />
+          </button>
+          <button className="btn btn__right" onClick={() => nextButton()}>
+            <FaAngleDoubleRight />
+          </button>
         </section>
       </section>
     </main>
